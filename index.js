@@ -1,18 +1,23 @@
 const express = require("express");
 const app = express();
-const models = require('./models');
-const bodyParser = require("body-parser");
+const db = require('./models');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 app.get("/artist", function (req, response) {
   console.log('querying artist');
-  models.artist.findAll().then(function (artists){
+  db.artist.findAll().then(function (artists){
     console.log(artists);
     response.send(artists);
   });
 });
+
+app.get('/artist/:id', (req, res) => {
+  db.artist.findByPk(req.params.id).then( (artist) => {
+    res.send(artist);
+  });
+})
 
 app.put("/artist/:id", function (req, response) {
   console.log('updating artist: ' + req.params.id);
@@ -28,7 +33,7 @@ app.put("/artist/:id", function (req, response) {
 
   console.log(updateValues);
 
-  models.artist.update(updateValues, { where: { id: req.params.id } })
+  db.artist.update(updateValues, { where: { id: req.params.id } })
   .then(function (updated) {
     console.log('updated success');
     console.log(updated);
@@ -39,7 +44,7 @@ app.put("/artist/:id", function (req, response) {
 app.post("/artist", function (req, response) {
   console.log('creating artist');
   console.log(req.body);
-  models.artist.create({name: req.body.name, dob: req.body.dob})
+  db.artist.create({name: req.body.name, dob: req.body.dob})
   .then(function (artist){
     console.log(artist);
     response.send("new artist created with id: " + artist.id);
