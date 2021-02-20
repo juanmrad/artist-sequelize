@@ -5,7 +5,7 @@ const db = require('./models');
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-app.get("/artist", function (req, response) {
+app.get("/artist", (req, res) => {
   console.log('querying artist');
   db.artist.findAll().then(function (artists){
     console.log(artists);
@@ -19,7 +19,7 @@ app.get('/artist/:id', (req, res) => {
   });
 })
 
-app.put("/artist/:id", function (req, response) {
+app.put("/artist/:id", (req, res) => {
   console.log('updating artist: ' + req.params.id);
   let updateValues = {};
 
@@ -41,7 +41,7 @@ app.put("/artist/:id", function (req, response) {
   });
 });
 
-app.post("/artist", function (req, response) {
+app.post("/artist", (req, res) => {
   console.log('creating artist');
   console.log(req.body);
   db.artist.create({name: req.body.name, dob: req.body.dob})
